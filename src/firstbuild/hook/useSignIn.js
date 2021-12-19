@@ -1,39 +1,27 @@
-import { useState, useEffect } from "react";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signInWithEmailAndPassword } from "@firebase/auth";
+import { useState } from "react/cjs/react.development";
 import { fireAuth } from "../firebase/config";
 import { useAuthContext } from "./useAuth";
 
-export const useSignup = () => {
-    const [error, setError] = useState(null);
+export const useSignIn = () => {
     const [isPending, setIsPending] = useState(false);
+    const [error, setError] = useState(true);
     const { dispatch } = useAuthContext();
 
-    // to get the currennt user, that is why we are using the useAuthContext
-    // from the useAuthCOntext, we will be able to get the dispatch which is from the authContext.js
-
-    const signUp = async(email, password, displayName) => {
-        setError(null);
+    const signIn = async(email, password) => {
         setIsPending(true);
-
         try {
-            //    sign up user
-
-            const res = await createUserWithEmailAndPassword(fireAuth, email, password);
+            const res = await signInWithEmailAndPassword(fireAuth, email, password);
             console.log(res.user);
             if (!res) {
-                throw new Error("could not complete your signup");
+                throw new Error("There was an error");
             }
-            // to update the user profile to get his displAY name
-            await updateProfile(res.user, { displayName });
-
-            //dispatch login action
-            dispatch({ type: "LOGIN", payload: res.user });
-
+            dispatch({
+                type: "LOGIN",
+                payload: res.user,
+            });
+        } catch (error) {
             setIsPending(false);
-            setError(null);
-        } catch (err) {
-            setIsPending(false);
-            console.log(err.message);
             switch (error.message) {
                 case "Firebase: Error (auth/network-request-failed).":
                     return setError("Connection failure");
@@ -50,5 +38,5 @@ export const useSignup = () => {
             }
         }
     };
-    return { error, isPending, signUp };
+    return { signIn, isPending, error };
 };

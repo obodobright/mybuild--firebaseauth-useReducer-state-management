@@ -1,10 +1,10 @@
 import "./App.css";
-import Base from "./firstbuild/root/root";
-
+// import Base from "./firstbuild/root/root";
+import ClientHome from "./clientPanel/clientHome";
 function App() {
   return (
     <div>
-      <Base />
+      <ClientHome />
     </div>
   );
 }

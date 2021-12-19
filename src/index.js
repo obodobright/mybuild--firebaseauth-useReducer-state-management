@@ -3,12 +3,14 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { AuthContextProvider } from "./firstbuild/context/AuthContext";
+import { store } from "./clientPanel/redux/store";
+import { Provider } from "react-redux";
+
 ReactDOM.render(
   <React.StrictMode>
-    <AuthContextProvider>
+    <Provider store={store}>
       <App />
-    </AuthContextProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

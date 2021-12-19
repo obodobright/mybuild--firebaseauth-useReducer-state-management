@@ -1,0 +1,6 @@
+export const ActionTypes = {
+    IS_LOGGED_IN: "IS_LOGGED_IN",
+    IS_SIGNED_UP: "IS_SIGNED_UP",
+    IS_LOGGED_OUT: "IS_LOGGED_OUT",
+    AUTH_IS_READY: "AUTH_IS_READY",
+};
