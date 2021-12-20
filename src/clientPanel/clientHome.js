@@ -8,26 +8,35 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { authReadyAction } from "./redux/actions/Actions";
 import { fireAuth } from "./firebase/firebase";
+import { useSelector } from "react-redux";
+import { NewClient } from "./pages/NewClient";
 
 const ClientHome = () => {
+  const authReady = useSelector((state) => state.user.AuthIsReady);
   const dispatch = useDispatch();
   useEffect(() => {
-    const unSub = onAuthStateChanged(fireAuth, (user) => {
+    const sub = onAuthStateChanged(fireAuth, (user) => {
       dispatch(authReadyAction(user));
     });
-    unSub();
+    sub();
   }, []);
   return (
-    <BrowserRouter>
-      <AppNavBar />
-      <div className="container">
-        <Switch>
-          <Route path="/" exact component={Dashboard} />
-          <Route path="/register" exact component={Register} />
-          <Route path="/login" exact component={Login} />
-        </Switch>
-      </div>
-    </BrowserRouter>
+    <>
+      {authReady && (
+        <BrowserRouter>
+          <AppNavBar />
+          <div className="container">
+            <Switch>
+              {/* {user ? <Route path="/" exact component={Dashboard} /> : <Redirect to="/login" />} */}
+              <Route path="/" exact component={Dashboard} />
+              <Route path="/register" exact component={Register} />
+              <Route path="/login" exact component={Login} />
+              <Route path="/client/add" exact component={NewClient} />
+            </Switch>
+          </div>
+        </BrowserRouter>
+      )}
+    </>
   );
 };
 

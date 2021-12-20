@@ -15,11 +15,18 @@ export const signUpAction = (user) => {
 export const logOutAction = () => {
     return {
         type: ActionTypes.IS_LOGGED_OUT,
+        payload: null,
     };
 };
 export const authReadyAction = (user) => {
     return {
         type: ActionTypes.AUTH_IS_READY,
         payload: user,
+    };
+};
+export const allClient = (client) => {
+    return {
+        type: ActionTypes.ALL_CLIENTS,
+        payload: client,
     };
 };

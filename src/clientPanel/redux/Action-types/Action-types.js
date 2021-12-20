@@ -3,4 +3,6 @@ export const ActionTypes = {
     IS_SIGNED_UP: "IS_SIGNED_UP",
     IS_LOGGED_OUT: "IS_LOGGED_OUT",
     AUTH_IS_READY: "AUTH_IS_READY",
+    NEW_CLIENTS: "NEW_CLIENTS",
+    ALL_CLIENTS: "ALL_CLIENTS",
 };

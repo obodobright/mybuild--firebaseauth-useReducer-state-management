@@ -1,42 +1,35 @@
 import { ActionTypes } from "../Action-types/Action-types";
 
 const initialState = {
-    user: {},
-    AuthIsReady: false,
+    user: null,
+    AuthIsReady: true,
 };
+
+const clientData = {
+    client: [],
+};
+Object.assign(clientData.client);
 
 export const LoginReducer = (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.IS_LOGGED_IN:
-            return { user: action.payload };
-        default:
-            return { state };
-    }
-};
-
-export const SignUpReducer = (state = initialState, action) => {
-    switch (action.type) {
+            return { user: action.payload, AuthIsReady: true };
         case ActionTypes.IS_SIGNED_UP:
-            return { user: action.payload };
-        default:
-            return { state };
-    }
-};
-
-export const signOutReducer = (state = {}, action) => {
-    switch (action.type) {
+            return { user: action.payload, AuthIsReady: true };
         case ActionTypes.IS_LOGGED_OUT:
-            return { state };
+            return { user: action.payload, AuthIsReady: true };
+        case ActionTypes.AUTH_IS_READY:
+            return { user: action.payload, AuthIsReady: true };
         default:
             return { state };
     }
 };
 
-export const authIsReadyReducer = (state = initialState, action) => {
+export const ClientReducer = (state = clientData, action) => {
     switch (action.type) {
-        case ActionTypes.AUTH_IS_READY:
-            return {...state, user: action.payload, AuthIsReady: true };
+        case ActionTypes.ALL_CLIENTS:
+            return {...state, client: action.payload };
         default:
-            return { state };
+            return state;
     }
 };
