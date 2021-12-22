@@ -3,12 +3,8 @@ import { ActionTypes } from "../Action-types/Action-types";
 const initialState = {
     user: null,
     AuthIsReady: true,
-};
-
-const clientData = {
     client: [],
 };
-Object.assign(clientData.client);
 
 export const LoginReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -20,16 +16,20 @@ export const LoginReducer = (state = initialState, action) => {
             return { user: action.payload, AuthIsReady: true };
         case ActionTypes.AUTH_IS_READY:
             return { user: action.payload, AuthIsReady: true };
+        case ActionTypes.ALL_CLIENTS:
+            return {...state, client: action.payload, AuthIsReady: true };
+        case ActionTypes.SELECTED_CLIENT:
+            return {...state, client: action.payload, AuthIsReady: true };
         default:
             return { state };
     }
 };
 
-export const ClientReducer = (state = clientData, action) => {
-    switch (action.type) {
-        case ActionTypes.ALL_CLIENTS:
-            return {...state, client: action.payload };
-        default:
-            return state;
-    }
-};
+// export const getSingleClient = (state = {}, action) => {
+//     switch (action.type) {
+//         case ActionTypes.SELECTED_CLIENT:
+//             return {...state, client: action.payload, AuthIsReady: true };
+//         default:
+//             return { state };
+//     }
+// };

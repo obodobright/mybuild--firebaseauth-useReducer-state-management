@@ -24,9 +24,17 @@ export const authReadyAction = (user) => {
         payload: user,
     };
 };
-export const allClient = (client) => {
+
+export const allClient = (user) => {
     return {
         type: ActionTypes.ALL_CLIENTS,
-        payload: client,
+        payload: user,
+    };
+};
+
+export const selectedClient = (user) => {
+    return {
+        type: ActionTypes.SELECTED_CLIENT,
+        payload: user,
     };
 };

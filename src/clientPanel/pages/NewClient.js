@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useAddClient } from "../hooks/usePost";
 import { Loadings } from "../layout/loader";
+import { useFetchCLient } from "../hooks/useFetchUser";
+import { useEffect } from "react";
 
 export const NewClient = () => {
   const [firstName, setFirstName] = useState("");
@@ -16,6 +18,7 @@ export const NewClient = () => {
   const handleNewClient = () => {
     addClient(firstName, lastName, email, phone, balance);
   };
+
   return (
     <div className="container">
       <Container>

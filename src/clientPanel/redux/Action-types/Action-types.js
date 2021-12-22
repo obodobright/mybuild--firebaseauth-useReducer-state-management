@@ -5,4 +5,5 @@ export const ActionTypes = {
     AUTH_IS_READY: "AUTH_IS_READY",
     NEW_CLIENTS: "NEW_CLIENTS",
     ALL_CLIENTS: "ALL_CLIENTS",
+    SELECTED_CLIENT: "SELECTED_CLIENT",
 };

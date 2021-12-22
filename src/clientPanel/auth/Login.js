@@ -33,7 +33,7 @@ export const Login = () => {
           {!loading && <Button onClick={handleLogin}>Login</Button>}
           {loading && (
             <Button>
-              <Loadings />
+              <Loadings color="white" height={20} width={20} />
             </Button>
           )}
         </Card>

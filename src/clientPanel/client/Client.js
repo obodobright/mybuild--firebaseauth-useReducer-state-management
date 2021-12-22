@@ -1,13 +1,17 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFetchCLient } from "../hooks/useFetchUser";
+import { Link, useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Loadings } from "../layout/loader";
+
 const Clients = () => {
-  const { fetchClient } = useFetchCLient();
+  const { fetchClient, loading, error } = useFetchCLient();
+  const client = useSelector((state) => state.user.client);
+
   useEffect(() => {
     fetchClient();
-  }, [fetchClient]);
-
+  }, []);
   return (
     <div className="row">
       <div className="col-md-6">
@@ -23,24 +27,36 @@ const Clients = () => {
             <th />
           </tr>
         </thead>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            background: "white",
+          }}
+        >
+          {loading && <Loadings color="red" height={40} width={40} />}
+        </div>
 
-        {/* <tbody>
-          {client?.map((prop, i) => (
-            <tr key={i}>
-              <td>
-                {prop?.firstName}
-                {prop?.lastName}
-              </td>
-              <td>{prop?.email}</td>
-              <td>${parseFloat(prop?.balance).toFixed(2)}</td>
-              <td>
-                <Link to={`/client/${i}`} className="btn btn-secondary">
-                  Details
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody> */}
+        <tbody>
+          {client &&
+            client?.map((prop, i) => (
+              <tr key={i}>
+                <td>
+                  {prop?.data?.firstName}
+                  {prop?.data?.lastName}
+                </td>
+                <td>{prop?.data?.email}</td>
+                <td>${parseFloat(prop?.data?.balance).toFixed(2)}</td>
+                <td>
+                  <Link to={`/clientdetail/${prop.id}`} className="btn btn-secondary">
+                    Details
+                  </Link>
+                </td>
+              </tr>
+            ))}
+        </tbody>
       </table>
     </div>
   );

@@ -10,6 +10,7 @@ import { authReadyAction } from "./redux/actions/Actions";
 import { fireAuth } from "./firebase/firebase";
 import { useSelector } from "react-redux";
 import { NewClient } from "./pages/NewClient";
+import { ClientDetails } from "./client/ClientDetails";
 
 const ClientHome = () => {
   const authReady = useSelector((state) => state.user.AuthIsReady);
@@ -32,6 +33,7 @@ const ClientHome = () => {
               <Route path="/register" exact component={Register} />
               <Route path="/login" exact component={Login} />
               <Route path="/client/add" exact component={NewClient} />
+              <Route path="/clientdetail/:id" exact component={ClientDetails} />
             </Switch>
           </div>
         </BrowserRouter>

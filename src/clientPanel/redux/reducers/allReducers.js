@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import { LoginReducer, ClientReducer } from "./Reducers";
+import { LoginReducer, getSingleClient } from "./Reducers";
 export const allReducers = combineReducers({
     user: LoginReducer,
-    client: ClientReducer,
+    // client: getSingleClient,
 });
