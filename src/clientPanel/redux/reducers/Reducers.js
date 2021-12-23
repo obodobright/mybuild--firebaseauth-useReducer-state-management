@@ -4,6 +4,7 @@ const initialState = {
     user: null,
     AuthIsReady: true,
     client: [],
+    selectedClient: {},
 };
 
 export const LoginReducer = (state = initialState, action) => {
@@ -19,16 +20,18 @@ export const LoginReducer = (state = initialState, action) => {
         case ActionTypes.ALL_CLIENTS:
             return {...state, client: action.payload, AuthIsReady: true };
         case ActionTypes.SELECTED_CLIENT:
-            return {...state, client: action.payload, AuthIsReady: true };
+            return {...state, selectedClient: action.payload, AuthIsReady: true };
+        case ActionTypes.UPDATED_BALANCE:
+            return {...state, AuthIsReady: true };
         default:
             return { state };
     }
 };
 
-// export const getSingleClient = (state = {}, action) => {
+// export const getSingleClient = (state = initialState, action) => {
 //     switch (action.type) {
 //         case ActionTypes.SELECTED_CLIENT:
-//             return {...state, client: action.payload, AuthIsReady: true };
+//             return {...state, selectedClient: action.payload, AuthIsReady: true };
 //         default:
 //             return { state };
 //     }

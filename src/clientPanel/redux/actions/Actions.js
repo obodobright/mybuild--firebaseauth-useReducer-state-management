@@ -38,3 +38,8 @@ export const selectedClient = (user) => {
         payload: user,
     };
 };
+export const updateClientBalance = () => {
+    return {
+        type: ActionTypes.SELECTED_CLIENT,
+    };
+};

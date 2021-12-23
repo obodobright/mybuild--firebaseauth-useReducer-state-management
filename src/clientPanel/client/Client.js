@@ -1,21 +1,32 @@
 import React from "react";
-import { useEffect, useState } from "react";
 import { useFetchCLient } from "../hooks/useFetchUser";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Loadings } from "../layout/loader";
+import { useEffect } from "react";
 
 const Clients = () => {
-  const { fetchClient, loading, error } = useFetchCLient();
+  const { loading, error } = useFetchCLient();
   const client = useSelector((state) => state.user.client);
 
+  function Sum(a, b, c) {
+    return a + b + c;
+  }
+  const getTotalBalance = () => {
+    const total = client?.map((prop) => console.log(Sum(prop?.data?.balance)));
+    return total;
+  };
+
+  console.log(client);
   useEffect(() => {
-    fetchClient();
+    getTotalBalance();
   }, []);
+  // if (client) {
   return (
     <div className="row">
-      <div className="col-md-6">
+      <div className="d-flex align-items-center justify-content-between w-100">
         <h2>Clients</h2>
+        <div style={{ fontSize: "20px", fontWeight: "bold" }}>${parseFloat(0).toFixed(2)}</div>
       </div>
       <div className="col-md-6"></div>
       <table className="table table-striped">
@@ -27,39 +38,33 @@ const Clients = () => {
             <th />
           </tr>
         </thead>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            background: "white",
-          }}
-        >
-          {loading && <Loadings color="red" height={40} width={40} />}
-        </div>
 
         <tbody>
-          {client &&
-            client?.map((prop, i) => (
-              <tr key={i}>
-                <td>
-                  {prop?.data?.firstName}
-                  {prop?.data?.lastName}
-                </td>
-                <td>{prop?.data?.email}</td>
-                <td>${parseFloat(prop?.data?.balance).toFixed(2)}</td>
-                <td>
-                  <Link to={`/clientdetail/${prop.id}`} className="btn btn-secondary">
-                    Details
-                  </Link>
-                </td>
-              </tr>
-            ))}
+          {loading && <Loadings color="blue" height={40} width={40} />}
+
+          {client?.map((prop, i) => (
+            <tr key={i}>
+              <td>
+                {prop?.data?.firstName}
+                {prop?.data?.lastName}
+              </td>
+              <td>{prop?.data?.email}</td>
+              <td>${parseFloat(prop?.data?.balance).toFixed(2)}</td>
+              <td>
+                <Link to={`/clientdetail/${prop.id}`} className="btn btn-secondary">
+                  Details
+                </Link>
+              </td>
+            </tr>
+          ))}
+          {error && <div>{error}</div>}
         </tbody>
       </table>
     </div>
   );
+  // } else {
+  //   return <div>LOADING</div>;
+  // }
 };
 
 export default Clients;

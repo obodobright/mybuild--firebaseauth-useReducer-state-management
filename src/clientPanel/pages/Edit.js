@@ -4,17 +4,37 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useAddClient } from "../hooks/usePost";
 import { Loadings } from "../layout/loader";
+import { useHistory } from "react-router-dom";
 
-export const NewClient = () => {
+export const EditClient = ({
+  onSubmit,
+  closeEdit,
+  id,
+  nameFirst,
+  nameLast,
+  emailProp,
+  balanceProp,
+  phoneProp,
+}) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [balance, setBalance] = useState("");
-  const { loading, err, addClient } = useAddClient();
+  const { loading, err } = useAddClient();
+  const history = useHistory();
 
-  const handleNewClient = () => {
-    addClient(firstName, lastName, email, phone, balance);
+  const disabled =
+    balance.length > 0 &&
+    phone.length > 0 &&
+    firstName.length > 0 &&
+    lastName.length > 0 &&
+    email.length > 0;
+
+  const handleEdit = () => {
+    onSubmit(firstName, lastName, email, phone, balance);
+    history.push(`/clientdetail/${id}`);
+    closeEdit(false);
   };
 
   return (
@@ -22,35 +42,61 @@ export const NewClient = () => {
       <Container>
         <Wrapper>
           <Link to="/">Back to Dashboard</Link>
+          {/* <button onClick={closeEdit(false)}>close</button> */}
           <Card>
-            <TopText>Add Client</TopText>
+            <TopText>Edit Client</TopText>
             <CardInput>
               <InputHolder>
                 <Label>First Name</Label>
-                <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                <Input
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder={nameFirst}
+                />
               </InputHolder>
               <InputHolder>
                 <Label>Last Name</Label>
-                <Input value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                <Input
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder={nameLast}
+                />
               </InputHolder>
               <InputHolder>
                 <Label>Email</Label>
-                <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+                <Input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={emailProp}
+                />
               </InputHolder>
               <InputHolder>
                 <Label>Phone</Label>
-                <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+                <Input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder={phoneProp}
+                />
               </InputHolder>
               <InputHolder>
                 <Label>Balance</Label>
-                <Input value={balance} onChange={(e) => setBalance(e.target.value)} />
+                <Input
+                  value={balance}
+                  onChange={(e) => setBalance(e.target.value)}
+                  placeholder={balanceProp}
+                />
               </InputHolder>
               {loading && (
                 <Button>
                   <Loadings color="white" width={20} height={20} />
                 </Button>
               )}
-              {!loading && <Button onClick={handleNewClient}>Add Client</Button>}
+              {!loading && (
+                <Button disabled={!disabled} onClick={handleEdit}>
+                  Edit Client
+                </Button>
+              )}
+              {!disabled && <span>Please enter all inputs</span>}
               {err && <div>{err}</div>}
             </CardInput>
           </Card>
@@ -60,7 +106,7 @@ export const NewClient = () => {
   );
 };
 
-const Button = styled.div`
+const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -71,6 +117,8 @@ const Button = styled.div`
   border-radius: 5px;
   cursor: pointer;
   margin: 20px 0;
+  outline: none;
+  border: 0;
 `;
 const TopText = styled.div`
   padding: 7px 10px;

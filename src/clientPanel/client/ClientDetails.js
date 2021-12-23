@@ -2,21 +2,54 @@ import React from "react";
 import styled from "styled-components";
 import { BiPencil } from "react-icons/bi";
 import { useState, useEffect } from "react";
-import { Link, useParams, useHistory } from "react-router-dom";
-import { getDoc, doc } from "firebase/firestore";
+import { useParams, useHistory } from "react-router-dom";
+import { getDoc, doc, deleteDoc } from "firebase/firestore";
 import { dbstore } from "../firebase/firebase";
 import { useDispatch } from "react-redux";
 import { selectedClient } from "../redux/actions/Actions";
 import { useSelector } from "react-redux";
+import { updateDoc } from "firebase/firestore";
+import { EditClient } from "../pages/Edit";
+import { SvgLoading } from "../layout/SvgLoading";
+
 export const ClientDetails = () => {
+  const [balance, setBalance] = useState("");
+  const [openForm, setOPenForm] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const { id } = useParams();
-  const client = useSelector((state) => state.user.client);
-  console.log(id);
-  console.log(client);
+  const client = useSelector((state) => state.user.selectedClient);
+
   const history = useHistory();
 
+  const handleShowEdit = () => {
+    setShowEdit(true);
+  };
+
+  const clientUpdate = {
+    balance: balance,
+  };
+  const handleUpdateBalance = async () => {
+    const clientRef = doc(dbstore, "client", id);
+
+    updateDoc(clientRef, clientUpdate);
+    setOPenForm(false);
+    setBalance("");
+  };
+
+  const handleOpenForm = () => {
+    setOPenForm(!openForm);
+  };
+
+  const handleEditSubmit = async (firstName, lastName, email, phone, balance) => {
+    const Ref = doc(dbstore, "client", id);
+    const payload = { firstName, lastName, email, phone, balance };
+    await updateDoc(Ref, payload);
+  };
+
   const getClient = async () => {
+    setLoading(true);
     const docRef = doc(dbstore, "client", id);
     const docSnap = await getDoc(docRef);
 
@@ -26,75 +59,109 @@ export const ClientDetails = () => {
     } else {
       console.log("no such doc");
     }
+    setLoading(false);
+  };
+
+  const handleDelete = async () => {
+    await deleteDoc(doc(dbstore, "client", id));
+    history.push("/");
   };
 
   useEffect(() => {
     getClient();
-  }, [id]);
+  }, [id, openForm, showEdit]);
 
-  const [balance, setBalance] = useState("");
   return (
     <Container>
       <Wrapper>
-        <TopDiv>
-          <GoBack onClick={history.goBack}>Back to Dashboard</GoBack>
-          <ButtonHolder>
-            <Button bg="black">Edit</Button>
-            <Button bg="red">Delete</Button>
-          </ButtonHolder>
-        </TopDiv>
-        <Card>
-          <Name>
-            {client?.firstName} {client?.lastName}{" "}
-          </Name>
-          <Detail>
-            <Divs>
-              <ClientId>
-                Client ID: <span>{id}</span>{" "}
-              </ClientId>
-              <Balance>
-                <BalInfo>
-                  <Div>
-                    Balance: <span cl>${parseFloat(client?.balance).toFixed(2)}</span>{" "}
-                  </Div>
-                  <Icon>
-                    <BiPencil />
-                  </Icon>
-                </BalInfo>
-                <InputHolder>
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    value={balance}
-                    onChange={(e) => setBalance(e.target.value)}
-                  />
-                  <UpdateBtn>Update</UpdateBtn>
-                </InputHolder>
-              </Balance>
-            </Divs>
-            <hr style={{ marginBottom: "-10px" }} />
-          </Detail>
+        {!showEdit ? (
+          <>
+            <TopDiv>
+              <GoBack onClick={history.goBack}>Back to Dashboard</GoBack>
+              <ButtonHolder>
+                <Button bg="black" onClick={handleShowEdit}>
+                  Edit
+                </Button>
+                <Button bg="red" onClick={handleDelete}>
+                  Delete
+                </Button>
+              </ButtonHolder>
+            </TopDiv>
+            {loading ? (
+              <SvgLoading />
+            ) : (
+              <Card>
+                <Name>
+                  {client?.firstName} {client?.lastName}{" "}
+                </Name>
+                <Detail>
+                  <Divs>
+                    <ClientId>
+                      Client ID: <span>{id}</span>{" "}
+                    </ClientId>
+                    <Balance>
+                      <BalInfo>
+                        <Div>
+                          Balance:{" "}
+                          <Span style={client?.balance > 0 ? { color: "red" } : { color: "green" }}>
+                            ${parseFloat(client?.balance).toFixed(2)}
+                          </Span>{" "}
+                        </Div>
+                        <Icon onClick={handleOpenForm}>
+                          <BiPencil />
+                        </Icon>
+                      </BalInfo>
+                      {openForm && (
+                        <InputHolder>
+                          <Input
+                            type="text"
+                            placeholder="0"
+                            value={balance}
+                            onChange={(e) => setBalance(e.target.value)}
+                          />
+                          <UpdateBtn onClick={handleUpdateBalance}>Update</UpdateBtn>
+                        </InputHolder>
+                      )}
+                    </Balance>
+                  </Divs>
+                  <hr style={{ marginBottom: "-10px" }} />
+                </Detail>
 
-          <DownDiv>
-            <Contact bb>Contact Email: {client?.email}</Contact>
-            <Contact>Contact Phone: {client?.phone}</Contact>
-          </DownDiv>
-        </Card>
+                <DownDiv>
+                  <Contact bb>Contact Email: {client?.email}</Contact>
+                  <Contact>Contact Phone: {client?.phone}</Contact>
+                </DownDiv>
+              </Card>
+            )}
+          </>
+        ) : (
+          <EditClient
+            onSubmit={handleEditSubmit}
+            closeEdit={setShowEdit}
+            id={id}
+            nameFirst={client?.firstName}
+            nameLast={client?.lastName}
+            emailProp={client?.email}
+            balanceProp={client?.balance}
+            phoneProp={client?.phone}
+          />
+        )}
       </Wrapper>
     </Container>
   );
 };
 
+const Span = styled.span`
+  color: ${({ cl }) => cl};
+  background: ${({ bg }) => bg};
+`;
 const Div = styled.div`
   font-size: 17px;
   font-weight: 500;
-
-  span {
-    color: ${({ cl }) => (cl ? "red" : "green")};
-  }
 `;
 const Icon = styled.div`
   margin-left: 4px;
+  cursor: pointer;
   cursor: pointer;
 `;
 const UpdateBtn = styled.div`
@@ -109,9 +176,11 @@ const UpdateBtn = styled.div`
   cursor: pointer;
   border-radius: 2px;
 `;
-const GoBack = styled.button`
+const GoBack = styled.div`
   text-decoration: none;
   color: blue;
+  cursor: pointer;
+  font-size: 14px;
 `;
 const Button = styled.button`
   outline: none;
