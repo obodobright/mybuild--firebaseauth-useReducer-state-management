@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { updateDoc } from "firebase/firestore";
 import { EditClient } from "../pages/Edit";
 import { SvgLoading } from "../layout/SvgLoading";
+import { Settings } from "../settings/Settings";
 
 export const ClientDetails = () => {
   const [balance, setBalance] = useState("");
@@ -20,8 +21,10 @@ export const ClientDetails = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const client = useSelector((state) => state.user.selectedClient);
-
+  const editBalance = useSelector((state) => state.disabled);
   const history = useHistory();
+
+  console.log("disabled:", editBalance);
 
   const handleShowEdit = () => {
     setShowEdit(true);
@@ -50,16 +53,21 @@ export const ClientDetails = () => {
 
   const getClient = async () => {
     setLoading(true);
-    const docRef = doc(dbstore, "client", id);
-    const docSnap = await getDoc(docRef);
+    try {
+      const docRef = doc(dbstore, "client", id);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      console.log("document data", docSnap.data());
-      dispatch(selectedClient(docSnap.data()));
-    } else {
-      console.log("no such doc");
+      if (docSnap.exists()) {
+        console.log("document data", docSnap.data());
+        dispatch(selectedClient(docSnap.data()));
+      } else {
+        console.log("no such doc");
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error.message);
     }
-    setLoading(false);
   };
 
   const handleDelete = async () => {

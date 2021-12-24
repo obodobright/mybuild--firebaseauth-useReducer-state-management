@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useAddClient } from "../hooks/usePost";
 import { Loadings } from "../layout/loader";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export const EditClient = ({
   onSubmit,
@@ -23,6 +24,7 @@ export const EditClient = ({
   const [balance, setBalance] = useState("");
   const { loading, err } = useAddClient();
   const history = useHistory();
+  const editBalance = useSelector((state) => state.disabled);
 
   const disabled =
     balance.length > 0 &&
@@ -81,6 +83,7 @@ export const EditClient = ({
               <InputHolder>
                 <Label>Balance</Label>
                 <Input
+                  disabled={editBalance}
                   value={balance}
                   onChange={(e) => setBalance(e.target.value)}
                   placeholder={balanceProp}

@@ -43,3 +43,9 @@ export const updateClientBalance = () => {
         type: ActionTypes.SELECTED_CLIENT,
     };
 };
+
+export const disabledAction = () => {
+    return {
+        type: ActionTypes.DISABLE_BALANCE,
+    };
+};

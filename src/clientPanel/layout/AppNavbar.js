@@ -40,10 +40,20 @@ const AppNavBar = () => {
           <ul className="navbar-nav">
             {user ? (
               <>
-                <li className="nav-items" style={{ marginRight: "30px" }}>
+                <li className="nav-items nav-link" style={{ marginRight: "30px" }}>
                   {user.email}
                 </li>
-                <li className="nav-items" onClick={handleSignOut} style={{ cursor: "pointer" }}>
+                <li className="nav-items">
+                  <Link to="/setting" className="nav-link">
+                    Setting
+                  </Link>
+                </li>
+
+                <li
+                  className="nav-items nav-link"
+                  onClick={handleSignOut}
+                  style={{ cursor: "pointer" }}
+                >
                   Log out
                 </li>
               </>

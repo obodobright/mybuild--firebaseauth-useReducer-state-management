@@ -9,24 +9,23 @@ const Clients = () => {
   const { loading, error } = useFetchCLient();
   const client = useSelector((state) => state.user.client);
 
-  function Sum(a, b, c) {
-    return a + b + c;
+  const total = [];
+  client?.map((prop) => total.push(parseInt(prop?.data?.balance)));
+  console.log(total);
+  let sum = 0;
+  for (let i = 0; i < total.length; i++) {
+    sum += total[i];
   }
-  const getTotalBalance = () => {
-    const total = client?.map((prop) => console.log(Sum(prop?.data?.balance)));
-    return total;
-  };
+  console.log(sum);
 
-  console.log(client);
-  useEffect(() => {
-    getTotalBalance();
-  }, []);
   // if (client) {
   return (
     <div className="row">
       <div className="d-flex align-items-center justify-content-between w-100">
         <h2>Clients</h2>
-        <div style={{ fontSize: "20px", fontWeight: "bold" }}>${parseFloat(0).toFixed(2)}</div>
+        <div style={{ fontSize: "18px" }}>
+          Total Owed <span style={{ color: "#1777F2" }}>${parseFloat(sum).toFixed(2)}</span>
+        </div>
       </div>
       <div className="col-md-6"></div>
       <table className="table table-striped">
