@@ -11,34 +11,33 @@ import { useSelector } from "react-redux";
 import { updateDoc } from "firebase/firestore";
 import { EditClient } from "../pages/Edit";
 import { SvgLoading } from "../layout/SvgLoading";
-import { Settings } from "../settings/Settings";
+import { Error } from "../layout/Error";
 
 export const ClientDetails = () => {
-  const [balance, setBalance] = useState("");
+  const [balances, setBalances] = useState("");
   const [openForm, setOPenForm] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
   const dispatch = useDispatch();
   const { id } = useParams();
   const client = useSelector((state) => state.user.selectedClient);
-  const editBalance = useSelector((state) => state.disabled);
   const history = useHistory();
-
-  console.log("disabled:", editBalance);
 
   const handleShowEdit = () => {
     setShowEdit(true);
   };
 
   const clientUpdate = {
-    balance: balance,
+    balance: balances,
   };
   const handleUpdateBalance = async () => {
     const clientRef = doc(dbstore, "client", id);
 
     updateDoc(clientRef, clientUpdate);
     setOPenForm(false);
-    setBalance("");
+    setBalances("");
   };
 
   const handleOpenForm = () => {
@@ -66,6 +65,7 @@ export const ClientDetails = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
+      setError(true);
       console.log(error.message);
     }
   };
@@ -82,77 +82,85 @@ export const ClientDetails = () => {
   return (
     <Container>
       <Wrapper>
-        {!showEdit ? (
+        {error ? (
+          <Error />
+        ) : (
           <>
-            <TopDiv>
-              <GoBack onClick={history.goBack}>Back to Dashboard</GoBack>
-              <ButtonHolder>
-                <Button bg="black" onClick={handleShowEdit}>
-                  Edit
-                </Button>
-                <Button bg="red" onClick={handleDelete}>
-                  Delete
-                </Button>
-              </ButtonHolder>
-            </TopDiv>
-            {loading ? (
-              <SvgLoading />
-            ) : (
-              <Card>
-                <Name>
-                  {client?.firstName} {client?.lastName}{" "}
-                </Name>
-                <Detail>
-                  <Divs>
-                    <ClientId>
-                      Client ID: <span>{id}</span>{" "}
-                    </ClientId>
-                    <Balance>
-                      <BalInfo>
-                        <Div>
-                          Balance:{" "}
-                          <Span style={client?.balance > 0 ? { color: "red" } : { color: "green" }}>
-                            ${parseFloat(client?.balance).toFixed(2)}
-                          </Span>{" "}
-                        </Div>
-                        <Icon onClick={handleOpenForm}>
-                          <BiPencil />
-                        </Icon>
-                      </BalInfo>
-                      {openForm && (
-                        <InputHolder>
-                          <Input
-                            type="text"
-                            placeholder="0"
-                            value={balance}
-                            onChange={(e) => setBalance(e.target.value)}
-                          />
-                          <UpdateBtn onClick={handleUpdateBalance}>Update</UpdateBtn>
-                        </InputHolder>
-                      )}
-                    </Balance>
-                  </Divs>
-                  <hr style={{ marginBottom: "-10px" }} />
-                </Detail>
+            {!showEdit ? (
+              <>
+                <TopDiv>
+                  <GoBack onClick={history.goBack}>Back to Dashboard</GoBack>
+                  <ButtonHolder>
+                    <Button bg="black" onClick={handleShowEdit}>
+                      Edit
+                    </Button>
+                    <Button bg="red" onClick={handleDelete}>
+                      Delete
+                    </Button>
+                  </ButtonHolder>
+                </TopDiv>
+                {loading ? (
+                  <SvgLoading />
+                ) : (
+                  <Card>
+                    <Name>
+                      {client?.firstName} {client?.lastName}{" "}
+                    </Name>
+                    <Detail>
+                      <Divs>
+                        <ClientId>
+                          Client ID: <span>{id}</span>{" "}
+                        </ClientId>
+                        <Balance>
+                          <BalInfo>
+                            <Div>
+                              Balance:{" "}
+                              <Span
+                                style={client?.balance > 0 ? { color: "red" } : { color: "green" }}
+                              >
+                                ${parseFloat(client?.balance).toFixed(2)}
+                              </Span>{" "}
+                            </Div>
+                            <Icon onClick={handleOpenForm}>
+                              <BiPencil />
+                            </Icon>
+                          </BalInfo>
+                          {openForm && (
+                            <InputHolder>
+                              <Input
+                                type="text"
+                                placeholder="0"
+                                value={balances}
+                                onChange={(e) => setBalances(e.target.value)}
+                              />
+                              <UpdateBtn onClick={handleUpdateBalance}>Update</UpdateBtn>
+                            </InputHolder>
+                          )}
+                        </Balance>
+                      </Divs>
+                      <hr style={{ marginBottom: "-10px" }} />
+                    </Detail>
 
-                <DownDiv>
-                  <Contact bb>Contact Email: {client?.email}</Contact>
-                  <Contact>Contact Phone: {client?.phone}</Contact>
-                </DownDiv>
-              </Card>
+                    <DownDiv>
+                      <Contact bb>Contact Email: {client?.email}</Contact>
+                      <Contact>Contact Phone: {client?.phone}</Contact>
+                    </DownDiv>
+                  </Card>
+                )}
+              </>
+            ) : (
+              <EditClient
+                onSubmit={handleEditSubmit}
+                closeEdit={setShowEdit}
+                id={id}
+                nameFirst={client?.firstName}
+                nameLast={client?.lastName}
+                emailProp={client?.email}
+                balanceProp={client?.balance}
+                phoneProp={client?.phone}
+              />
             )}
           </>
-        ) : (
-          <EditClient
-            onSubmit={handleEditSubmit}
-            closeEdit={setShowEdit}
-            id={id}
-            nameFirst={client?.firstName}
-            nameLast={client?.lastName}
-            emailProp={client?.email}
-            balanceProp={client?.balance}
-            phoneProp={client?.phone}
-          />
         )}
       </Wrapper>
     </Container>

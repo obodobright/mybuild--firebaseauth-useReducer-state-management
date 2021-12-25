@@ -1,12 +1,30 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { disabledAction } from "../redux/actions/Actions";
-import { useSelector, useDispatch } from "react-redux";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
 export const Settings = () => {
-  const editBalance = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-  console.log(editBalance);
+  const { balance, dispatch, disabledAdd, enableReg } = useContext(AuthContext);
+
+  console.log("enable reg", enableReg);
+  const disableBalanceEdit = () => {
+    dispatch({
+      type: "DISABLED_BALANCE_EDIT",
+    });
+  };
+  const disableBalanceAdd = () => {
+    dispatch({
+      type: "DISABLED_BALANCE_ADD",
+    });
+  };
+  const enableRegistration = () => {
+    dispatch({
+      type: "ENABLE_REGISTRATION",
+    });
+  };
+
+  // console.log(balance);
+  // console.log(disabledAdd);
+
   return (
     <Container>
       <Wrapper>
@@ -17,20 +35,49 @@ export const Settings = () => {
           <CardTitle>Edit Settings</CardTitle>
           <SettingDetail>
             <InputHolder>
-              <Label>Allow Registration</Label>
-              <Input type="checkbox" />
+              <Label htmlFor="check3">
+                Allow Registration
+                <small
+                  style={
+                    enableReg
+                      ? { color: "green", cursor: "pointer" }
+                      : { color: "red", cursor: "pointer" }
+                  }
+                >
+                  {enableReg ? "true" : "false"}
+                </small>
+              </Label>
+              <Input type="checkbox" id="check3" value={enableReg} onChange={enableRegistration} />
             </InputHolder>
             <InputHolder>
-              <Label>Disable balance on add</Label>
-              <Input
-                type="checkbox"
-                value={editBalance}
-                onChange={() => dispatch(disabledAction())}
-              />
+              <Label htmlFor="check2">
+                Disable balance on add{" "}
+                <small
+                  style={
+                    disabledAdd
+                      ? { color: "green", cursor: "pointer" }
+                      : { color: "red", cursor: "pointer" }
+                  }
+                >
+                  {disabledAdd ? "true" : "false"}
+                </small>
+              </Label>
+              <Input type="checkbox" value={disabledAdd} onChange={disableBalanceAdd} id="check2" />
             </InputHolder>
             <InputHolder>
-              <Label>Disable balance on Edit</Label>
-              <Input type="checkbox" />
+              <Label htmlFor="check">
+                Disable balance on Edit{" "}
+                <small
+                  style={
+                    balance
+                      ? { color: "green", cursor: "pointer" }
+                      : { color: "red", cursor: "pointer" }
+                  }
+                >
+                  {balance ? "true" : "false"}
+                </small>
+              </Label>
+              <Input type="checkbox" value={balance} onChange={disableBalanceEdit} id="check" />
             </InputHolder>
           </SettingDetail>
         </Card>
@@ -41,9 +88,13 @@ export const Settings = () => {
 
 const Input = styled.input`
   margin-left: 4px;
+  display: none;
 `;
 const Label = styled.label`
   font-size: 15px;
+  small {
+    margin-left: 3px;
+  }
 `;
 const InputHolder = styled.div``;
 const SettingDetail = styled.div`

@@ -5,8 +5,9 @@ import { useState } from "react";
 import { useAddClient } from "../hooks/usePost";
 import { Loadings } from "../layout/loader";
 import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
-
+import { FaTimes } from "react-icons/fa";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
 export const EditClient = ({
   onSubmit,
   closeEdit,
@@ -21,20 +22,20 @@ export const EditClient = ({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [balance, setBalance] = useState("");
+  const [balances, setBalances] = useState("");
   const { loading, err } = useAddClient();
   const history = useHistory();
-  const editBalance = useSelector((state) => state.disabled);
+  const { balance } = useContext(AuthContext);
 
   const disabled =
-    balance.length > 0 &&
+    balances.length > 0 &&
     phone.length > 0 &&
     firstName.length > 0 &&
     lastName.length > 0 &&
     email.length > 0;
 
   const handleEdit = () => {
-    onSubmit(firstName, lastName, email, phone, balance);
+    onSubmit(firstName, lastName, email, phone, balances);
     history.push(`/clientdetail/${id}`);
     closeEdit(false);
   };
@@ -44,9 +45,15 @@ export const EditClient = ({
       <Container>
         <Wrapper>
           <Link to="/">Back to Dashboard</Link>
-          {/* <button onClick={closeEdit(false)}>close</button> */}
+
           <Card>
-            <TopText>Edit Client</TopText>
+            <TopDiv>
+              <TopText>Edit Client</TopText>
+              <button onClick={() => closeEdit(false)}>
+                <FaTimes />
+              </button>
+            </TopDiv>
+
             <CardInput>
               <InputHolder>
                 <Label>First Name</Label>
@@ -83,9 +90,9 @@ export const EditClient = ({
               <InputHolder>
                 <Label>Balance</Label>
                 <Input
-                  disabled={editBalance}
-                  value={balance}
-                  onChange={(e) => setBalance(e.target.value)}
+                  disabled={balance}
+                  value={balances}
+                  onChange={(e) => setBalances(e.target.value)}
                   placeholder={balanceProp}
                 />
               </InputHolder>
@@ -109,6 +116,20 @@ export const EditClient = ({
   );
 };
 
+const TopDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    outline: none;
+    border: 0;
+    padding: 7px 10px;
+    background: lightgray;
+    border-bottom: 1px solid lightgray;
+    cursor: pointer;
+  }
+`;
 const Button = styled.button`
   display: flex;
   justify-content: center;

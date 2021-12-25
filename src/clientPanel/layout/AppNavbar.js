@@ -3,14 +3,18 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useLoggedOut } from "../hooks/useLoggedOut";
 import { Redirect } from "react-router-dom";
-
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
 const AppNavBar = () => {
+  const { enableReg } = useContext(AuthContext);
+  // console.log("Navbar ", enableReg);
+
   const { logOut } = useLoggedOut();
   const handleSignOut = () => {
     logOut();
   };
   const user = useSelector((state) => state.user.user);
-  console.log(user);
+  // console.log(user);
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-primary mb-4">
       <div className="container">
@@ -64,11 +68,13 @@ const AppNavBar = () => {
                     Login
                   </Link>
                 </li>
-                <li className="nav-items">
-                  <Link to="/register" className="nav-link">
-                    Register
-                  </Link>
-                </li>
+                {!enableReg && (
+                  <li className="nav-items">
+                    <Link to="/register" className="nav-link">
+                      Register
+                    </Link>
+                  </li>
+                )}
               </>
             )}
           </ul>

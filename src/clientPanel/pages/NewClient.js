@@ -4,17 +4,20 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useAddClient } from "../hooks/usePost";
 import { Loadings } from "../layout/loader";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
 
 export const NewClient = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [balance, setBalance] = useState("");
+  const [balances, setBalances] = useState("");
   const { loading, err, addClient } = useAddClient();
+  const { disabledAdd } = useContext(AuthContext);
 
   const handleNewClient = () => {
-    addClient(firstName, lastName, email, phone, balance);
+    addClient(firstName, lastName, email, phone, balances);
   };
 
   return (
@@ -43,7 +46,11 @@ export const NewClient = () => {
               </InputHolder>
               <InputHolder>
                 <Label>Balance</Label>
-                <Input value={balance} onChange={(e) => setBalance(e.target.value)} />
+                <Input
+                  value={balances}
+                  onChange={(e) => setBalances(e.target.value)}
+                  disabled={disabledAdd}
+                />
               </InputHolder>
               {loading && (
                 <Button>

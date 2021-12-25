@@ -47,6 +47,8 @@ const ErrorMessage = styled.div`
   padding: 10px 5px;
   background: red;
   color: black;
+  font-size: 14px;
+  color: white;
 `;
 
 const IconHolder = styled.div`

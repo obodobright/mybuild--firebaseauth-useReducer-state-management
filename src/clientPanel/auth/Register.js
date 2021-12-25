@@ -34,7 +34,7 @@ export const Register = () => {
           </InputHolder>
           <InputHolder>
             <Label>Password</Label>
-            <Input value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input value={password} type="password" onChange={(e) => setPassword(e.target.value)} />
           </InputHolder>
           {!loading && <Button onClick={handleSignUp}>Register</Button>}
           {loading && (

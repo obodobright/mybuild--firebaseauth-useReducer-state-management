@@ -15,11 +15,10 @@ export const useFetchCLient = () => {
             try {
                 onSnapshot(collection(dbstore, "client"), (snapshot) => {
                     const data = snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
-                    console.log(data);
+                    // console.log(data);
 
                     dispatch(allClient(data));
                     setLoading(false);
-                    setError(null);
                 });
             } catch (error) {
                 setLoading(false);
